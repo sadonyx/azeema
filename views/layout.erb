@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <header>
+    <title>Azeema</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans">
+    <link rel="stylesheet" href="/stylesheets/whitespace-reset.css">
+  </header>
+  <body>
+    <%if session[:error] %>
+      <p>
+        <%= session.delete(:error) %>
+      </p>
+    <% end %>
+    <%== yield %>
+    <div>
+      <p>Logged in as: 
+        <%= "#{@user_session.username}, id: #{@user_session.id}" %>
+      </p>
+      
+    </div>
+  </body>
+</html>

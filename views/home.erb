@@ -1,0 +1,12 @@
+<h1>Azeema</h1>
+
+<% if is_logged_in? %>
+  <form method="post" action="/logout">
+    <input type="submit" name="logout" value="Logout"/>
+  </form>
+  <a href="/events/create-event">Create New Event</a>
+  <a href="/users/<%= @user_session.username %>/events">My Events</a>
+<% else %>
+    <a href="/login">Log In</a>
+    <a href="/users/new-user">New User</a>
+<% end %>

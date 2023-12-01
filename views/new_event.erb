@@ -1,0 +1,38 @@
+<form action="/events/create-event" method="post">
+  <dl>
+    <dt>
+      <label for="title">Enter the event title:</label>
+    </dt>
+    <dd>
+      <input name="title" placeholder="Spectacular Gathering..." type="text" value="" required>
+    </dd>
+    <dt>
+      <label for="description">Enter the event description:</label>
+    </dt>
+    <dd>
+      <textarea name="description"></textarea>
+    </dd>
+    <dt>
+      <label for="location">Enter the location of your event:</label>
+    </dt>
+    <dd>
+      <input name="location" type="text" value="" required>
+    </dd>
+    <dt>
+      <label for="date">Enter the date of your event:</label>
+    </dt>
+    <dd>
+      <input name="date" type="date" value="" min=<%= Date.today.to_s %>>
+    </dd>
+    <dt>
+      <label for="time">Enter the time of your event:</label>
+    </dt>
+    <dd>
+      <input name="time" type="time" value="" required>
+    </dd>
+  </dl>
+  <fieldset class="actions">
+    <input type="submit" value="Save">
+    <a href="/">Cancel</a>
+  </fieldset>
+</form>
