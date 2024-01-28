@@ -1,0 +1,99 @@
+<div class="ne-container-mob">
+  <form class="new-event" action="/e/<%= @event[:id] %>/edit" method="post" enctype="multipart/form-data">
+      <label class="inp order-0" for="title">
+        <input name="title" type="text" value="<%= params[:title] || @event[:title] %>" placeholder="" required>
+        <span class="label">Title</span>
+        <span class="focus-bg"></span>
+      </label>
+      <label class="inp order-3" for="location">
+        <input name="location" type="text" value="<%= params[:location] || @event[:location] %>" placeholder="" required>
+        <span class="label">Location</span>
+        <span class="focus-bg"></span>
+      </label>
+      <div class="datetime order-2">
+        <input name="date" type="date" value="<%= params[:date] || @event[:date] %>" required>
+        <span></span>
+        <div class="time-container">
+          <label class="inp"> 
+            <input name="time-start" type="time" step="900" value="<%= params[:'time-start'] || @event[:time_start] %>" required>
+            <span class="label">Start</span>
+            <span class="focus-bg"></span>
+          </label>
+          <label class="inp"> 
+            <input name="time-end" type="time" step="900" value="<%= params[:'time-end'] || @event[:time_end] %>" required>
+            <span class="label">End</span>
+            <span class="focus-bg"></span>
+          </label>
+        </div>
+      </div>
+      <label class="inp order-4" for="description">
+        <textarea id="description-mob" name="description" placeholder=""><%= params[:description] || @event[:description] %></textarea>
+        <span class="label" >Description</span>
+        <span class="focus-bg"></span>
+      </label>
+      <input class="save-event-btn" type="submit" value="Save">
+      <!-- <a class="order-6" href="/">Cancel</a> -->
+    <div class="image-upload-container order-1">
+      <div class="image-upload" onclick="chooseFile()">
+        <img src="<%= @event[:event_picture] %>" id="preview-mob" class="image-upload-preview">
+        <input id="image-upload" class="image-upload-btn" type="file" accept="image/*" name="event-image" onchange="loadPreviewImage(event)">
+      </div>
+    </div>
+  </form>
+  <form action="/e/<%= @event[:id] %>/delete" method="post">
+    <input class="delete-event-btn" type="submit" value="Delete">
+  </form>
+  <span class="bottom-spacing order-5" ></span>
+</div>
+<!-- ----------------------------------------------- -->
+<div class="ne-container-desk">
+  <form class="new-event" action="/e/<%= @event[:id] %>/edit" method="post" enctype="multipart/form-data">
+    <div class="ne-text-section">
+      <label class="inp" for="title">
+        <input name="title" type="text" value="<%= params[:title] || @event[:title] %>" placeholder="" required>
+        <span class="label">Title</span>
+        <span class="focus-bg"></span>
+      </label>
+      <label class="inp" for="location">
+        <input name="location" type="text" value="<%= params[:location] || @event[:location] %>" placeholder="" required>
+        <span class="label">Location</span>
+        <span class="focus-bg"></span>
+      </label>
+      <div class="datetime">
+        <input name="date" type="date" value="<%= params[:date] || @event[:date] %>" required>
+        <span></span>
+        <div class="time-container">
+          <label class="inp"> 
+            <input name="time-start" type="time" step="900" value="<%= params[:'time-start'] || @event[:time_start] %>" required>
+            <span class="label">Start</span>
+            <span class="focus-bg"></span>
+          </label>
+          <label class="inp"> 
+            <input name="time-end" type="time" step="900" value="<%= params[:'time-end'] || @event[:time_end] %>" required>
+            <span class="label">End</span>
+            <span class="focus-bg"></span>
+          </label>
+        </div>
+      </div>
+      <label class="inp" for="description">
+        <textarea id="description-desk" name="description" placeholder=""><%= params[:description] || @event[:description] %></textarea>
+        <span class="label" >Description</span>
+        <span class="focus-bg"></span>
+      </label>
+    </div>
+      <input class="save-event-btn" type="submit" value="Save">
+    <div class="image-upload-container">
+      <div class="image-upload" onclick="chooseFile()">
+        <img src="<%= @event[:event_picture] %>" id="preview-desk" class="image-upload-preview">
+        <input id="image-upload" class="image-upload-btn" type="file" accept="image/*" name="event-image" onchange="loadPreviewImage(event)">
+      </div>
+    </div>
+  </form>
+  <form action="/e/<%= @event[:id] %>/delete" method="post">
+    <input class="delete-event-btn" type="submit" value="Delete">
+  </form>
+</div>
+
+<script src="/javascripts/loadPreviewImage.js"></script>
+<script src="javascripts/autoGrowTextarea.js"></script>
+<script src="/javascripts/chooseFile.js"></script>

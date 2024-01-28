@@ -1,0 +1,10 @@
+<div id="participants" class="participants <%= current_status.nil? ? 'blur' : '' %>">
+  <% participants.each do |participant| %>
+    <ul>
+      <li>
+        <img class="participant-image" src=<%= @storage.get_pfp_url(participant[:id]) %>>
+        <%= "#{participant[:username]}, #{participant[:status]}" %>
+      </li>
+    </ul>
+  <% end %>
+</div>

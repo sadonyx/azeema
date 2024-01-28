@@ -1,38 +1,85 @@
-<form action="/events/create-event" method="post">
-  <dl>
-    <dt>
-      <label for="title">Enter the event title:</label>
-    </dt>
-    <dd>
-      <input name="title" placeholder="Spectacular Gathering..." type="text" value="" required>
-    </dd>
-    <dt>
-      <label for="description">Enter the event description:</label>
-    </dt>
-    <dd>
-      <textarea name="description"></textarea>
-    </dd>
-    <dt>
-      <label for="location">Enter the location of your event:</label>
-    </dt>
-    <dd>
-      <input name="location" type="text" value="" required>
-    </dd>
-    <dt>
-      <label for="date">Enter the date of your event:</label>
-    </dt>
-    <dd>
-      <input name="date" type="date" value="" min=<%= Date.today.to_s %>>
-    </dd>
-    <dt>
-      <label for="time">Enter the time of your event:</label>
-    </dt>
-    <dd>
-      <input name="time" type="time" value="" required>
-    </dd>
-  </dl>
-  <fieldset class="actions">
-    <input type="submit" value="Save">
-    <a href="/">Cancel</a>
-  </fieldset>
-</form>
+<div class="ne-container-mob">
+  <form class="new-event" action="/events/create" method="post" enctype="multipart/form-data">
+    <label class="inp order-0" for="title">
+      <input name="title" type="text" value="<%= params[:title] || '' %>" placeholder="" required>
+      <span class="label">Title</span>
+      <span class="focus-bg"></span>
+    </label>
+    <label class="inp order-3" for="location">
+      <input name="location" type="text" value="<%= params[:location] || '' %>" placeholder="" required>
+      <span class="label">Location</span>
+      <span class="focus-bg"></span>
+    </label>
+    <div class="datetime order-2">
+      <input name="date" type="date" value="<%= params[:date] || '' %>" min="<%= Date.today.to_s %>" required>
+      <span></span>
+      <input name="time-start" type="time" step="900" value="<%= params[:'time-start'] || '' %>" required>
+      <input name="time-end" type="time" step="900" value="<%= params[:'time-end'] || '' %>" required>
+    </div>
+    <label class="inp order-4" for="description">
+      <textarea name="description" placeholder=""><%= params[:description] || '' %></textarea>
+      <span class="label" >Description</span>
+      <span class="focus-bg"></span>
+    </label>
+      <input class="save-event-btn" type="submit" value="Save">
+    <div class="image-upload-container order-1">
+      <div class="image-upload" onclick="chooseFile()">
+        <img id="preview-mob" class="image-upload-preview">
+        <input id="image-upload" class="image-upload-btn" type="file" accept="image/*" name="event-image" onchange="loadPreviewImage(event)">
+      </div>
+    </div>
+  </form>
+  <span class="bottom-spacing order-5" ></span>
+</div>
+
+<div class="ne-container-desk">
+  <form class="new-event" action="/events/create" method="post" enctype="multipart/form-data">
+    <div class="ne-text-section">
+      <label class="inp" for="title">
+        <input name="title" type="text" value="<%= params[:title] || '' %>" placeholder="" required>
+        <span class="label">Title</span>
+        <span class="focus-bg"></span>
+      </label>
+      <label class="inp" for="location">
+        <input name="location" type="text" value="<%= params[:location] || '' %>" placeholder="" required>
+        <span class="label">Location</span>
+        <span class="focus-bg"></span>
+      </label>
+      <div class="datetime">
+        <label class="inp"> 
+          <input id="date" name="date" type="date" value="<%= params[:date] || '' %>" min="<%= Date.today.to_s %>" required>
+          <span class="label">Start</span>
+          <span class="focus-bg"></span>
+        </label>
+        <div class="time-container">
+          <label class="inp"> 
+            <input name="time-start" type="time" step="900" value="<%= params[:'time-start'] || '' %>" required>
+            <span class="label">Start</span>
+            <span class="focus-bg"></span>
+          </label>
+          <label class="inp"> 
+            <input name="time-end" type="time" step="900" value="<%= params[:'time-end'] || '' %>" required>
+            <span class="label">End</span>
+            <span class="focus-bg"></span>
+          </label>
+        </div>
+      </div>
+      <label class="inp" for="description">
+        <textarea id="description-desk" name="description" placeholder=""><%= params[:description] || '' %></textarea>
+        <span class="label">Description</span>
+        <span class="focus-bg"></span>
+      </label>
+    </div>
+      <input class="save-event-btn" type="submit" value="Save">
+    <div class="image-upload-container">
+      <div class="image-upload" onclick="chooseFile()">
+        <img id="preview-desk" class="image-upload-preview">
+        <input id="image-upload" class="image-upload-btn" type="file" accept="image/*" name="event-image" onchange="loadPreviewImage(event)">
+      </div>
+    </div>
+  </form>
+</div>
+
+<script src="/javascripts/loadPreviewImage.js"></script>
+<script src="/javascripts/autoGrowTextarea.js"></script>
+<script src="/javascripts/chooseFile.js"></script>

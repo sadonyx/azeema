@@ -1,0 +1,59 @@
+.datetime {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  background-color: transparent;
+  border-radius: 8px;
+  width: 100%;
+}
+.datetime:focus-within {
+  border-color: teal;
+}
+.datetime input {
+  font: inherit;
+  color: inherit;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  outline: none;
+  border: 0;
+  background-color: transparent;
+}
+.datetime input[type=date] {
+  width: 10rem;
+  padding: 0.25rem 0 0.25rem 0.5rem;
+  border-right-width: 0;
+}
+.datetime input[type=time] {
+  width: 5.5rem;
+  padding: 0.25rem 0.5rem 0.25rem 0;
+  border-left-width: 0;
+}
+.datetime span {
+  height: 1rem;
+  margin-right: 0.25rem;
+  margin-left: 0.25rem;
+  border-right: 1px solid #ddd;
+}
+
+.info {
+  padding-top: 0.5rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.time-container {
+  margin: auto 0;
+}
+
+@media (max-width: 1024px) {
+  .datetime {
+    margin: 10px auto 10px auto;
+  }
+}
+
+@media (min-width: 1025px) {
+  .datetime {
+    margin: 0 auto;
+  }
+}

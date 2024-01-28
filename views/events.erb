@@ -1,0 +1,12 @@
+<div id="button-group" class="events-button-group">
+  <button class="events-filter-btn selected-filter" onclick="filterEvents(this)" id="all">All Events</button>
+  <button class="events-filter-btn" onclick="filterEvents(this)" id="upcoming">Upcoming</button>
+  <button class="events-filter-btn" onclick="filterEvents(this)" id="hosting">Hosting</button>
+  <button class="events-filter-btn" onclick="filterEvents(this)" id="attended">Attended</button>
+</div>
+<div id="events" class="all-events-container">
+  <%== partial(:_events_partial, :events => @events) %>
+</div>
+
+<script src="/javascripts/redirectToEditEvent.js"></script>
+<script src="/javascripts/filterEvents.js"></script>

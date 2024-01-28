@@ -1,0 +1,30 @@
+<div id="all-events-partial" class="all-events-partial-container">
+  <% @events.each do |event| %>
+    <div class="single-event-container noselect">
+      <div class="event-img-container">
+        <a href="/e/<%= event[:id]%>">
+          <img class="event-thumbnail" draggable=" false" src=<%= event[:event_picture] %>>
+        </a>
+        <% if event_owner?(event[:id]) %>
+          <button onclick="redirectToEditEvent(<%= event[:id] %>)" class="single-event-edit-btn">
+            <img src="/images/pencil.svg" class="edit-pencil">
+          </button>
+        <% end %>
+      </div>
+      <a href="/e/<%= event[:id]%>">
+        <h3 class="single-event-title">
+          <%= event[:title] %>
+        </h3>
+        <div class="single-event-datetime-container">
+          <p>
+            <%= format_date(event[:date]) %>
+          </p>
+          <p>
+          <%= format_datetime(event[:date], event[:time_start]).strftime "%I:%M %p" %>
+          </p>
+        </div>
+      </a>
+    </div>
+  <% end %>
+  <p class="status_for"><%= no_events_status(@events, @status_for) %></p>
+</div>

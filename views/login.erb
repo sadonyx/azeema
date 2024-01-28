@@ -1,20 +1,14 @@
-<form action="/login" method="post">
-  <dl>
-    <dt>
-      <label for="username">Username:</label>
-    </dt>
-    <dd>
-      <input name="username" type="text" value="" autofocus/>
-    </dd>
-    <dt>
-      <label for="password">Password:</label>
-    </dt>
-    <dd>
-      <input name="password" type="password" value=""/>
-    </dd>
-  </dl>
-  <fieldset class="actions">
+  <form class="login" action="/login" method="post">
+    <label class="login-inp" for="title">
+      <input name="username" type="text" value="" placeholder="" autofocus/>
+      <span class="login-label">Username</span>
+      <span class="focus-bg"></span>
+    </label>
+    <label class="login-inp" for="title">
+      <input name="password" type="password" placeholder="" value=""/>
+      <span class="login-label">Password</span>
+      <span class="focus-bg"></span>
+    </label>
     <input type="submit" value="Login">
-    <a href="/">Cancel</a>
-  </fieldset>
-</form>
+    <a href="/create-account">Create Account</a>
+  </form>

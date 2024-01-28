@@ -1,23 +1,59 @@
 <!DOCTYPE html>
 <html>
-  <header>
+  <head>
     <title>Azeema</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans">
     <link rel="stylesheet" href="/stylesheets/whitespace-reset.css">
-  </header>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans">
+    <link rel="stylesheet" href="/stylesheets/input.css">
+    <link rel="stylesheet" href="/stylesheets/application.css">
+    <link rel="stylesheet" href="/stylesheets/datetime.css">
+    <link rel="stylesheet" href="/stylesheets/event.css">
+    <link rel="stylesheet" href="/stylesheets/all-events.css">
+    <link rel="stylesheet" href="/stylesheets/login.css">
+    <link rel="stylesheet" href="/stylesheets/profile.css">
+    <link rel="stylesheet" href="/stylesheets/new-edit-event.css">
+  </head>
   <body>
-    <%if session[:error] %>
-      <p>
+
+    <header>
+      <a class="azeema-logo" href="/">
+        <img src="/images/azeema_logo.png" alt="Azeema Logo" height="75px"/>
+      </a>
+      <% if is_logged_in? %>
+        <a id="create" href="/events/create">
+          Create
+        </a>
+        <div class="profile-container">
+          <button class="profile-btn" id="profile-btn">
+            <img src="<%= @pfp %>" class="profile-picture-header"/>
+          </button>
+          <div class="profile-dropdown" id="profile-dropdown">
+            <a class="profile-link" href="/profile">
+              <img src="<%= @pfp %>" class="profile-picture-dropdown"/>
+              <p>See My Profile</p>
+            </a>
+            <form id="logout" action="/logout" method="post">
+              <button type="submit">Log out</button>
+            </form>
+          </div>
+        </div>
+      <% else %>
+        <a id="create" href="/login">
+          Login
+        </a>
+      <% end %>
+    </header>
+
+    <span class="notification">
+      <%if session[:error] %>
         <%= session.delete(:error) %>
-      </p>
-    <% end %>
+      <% elsif session[:success] %>
+        <%= session.delete(:success) %>
+      <% end %>
+    </span>
+
     <%== yield %>
-    <div>
-      <p>Logged in as: 
-        <%= "#{@user_session.username}, id: #{@user_session.id}" %>
-      </p>
-      
-    </div>
+    <script src="/javascripts/profileDropdown.js"></script>
   </body>
 </html>

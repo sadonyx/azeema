@@ -1,0 +1,210 @@
+.blur {
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+.participants {
+  display: flex;
+  flex-direction: column;
+}
+
+.participant-image {
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  height: 25px;
+  width: 25px;
+}
+
+.attending-status {
+  margin: 1rem auto;
+  width: 75%;
+}
+
+.cal-section {
+  display: block;
+  height: 50px;
+  width: 100%;
+}
+
+.event-info-container {
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+  width: 100%;
+}
+
+.event-info-container p {
+  margin: auto 0;
+}
+
+.organizer-icon {
+  height: 25px;
+  width: 25px;
+  margin: auto 10px auto 0;
+}
+
+.location-icon {
+  height: 25px;
+  width: 25px;
+  margin: auto 10px auto 0;
+}
+
+.spacer-20 {
+  display: block;
+  height: 20px;
+}
+
+.event {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  width: 75vw;
+  overflow-wrap: break-word;
+}
+
+.event > span {
+  margin: auto;
+}
+
+.event-title {
+  font-size: 3rem;
+  text-align: center;
+}
+
+.event-image-container {
+  display: block;
+  margin: 0.5rem auto;
+  width: 450px;
+}
+
+.event-image {
+  aspect-ratio: 1/1;
+  background-color: transparent;
+  border: solid;
+  border-color: black;
+  box-sizing: border-box;
+  color: transparent;
+  overflow: hidden;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.event-datetime {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.event-date {
+  font-size: 1.5rem;
+  margin: 0.25rem 0;
+}
+
+.event-time {
+  font-size: 1.25rem;
+  margin: 0.25rem 0;
+}
+
+.cal-dropdown {
+  position: absolute;
+  width: 250px;
+  background: rgb(0, 0, 0, 1);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  margin-top: 0.3rem;
+  transition: all 0.1s cubic-bezier(0.16, 1, 0.5, 1);
+
+  transform: translateY(0.5rem);
+  visibility: hidden;
+  opacity: 0;
+}
+
+.cal-dropdown a {
+  display: flex;
+  align-items: center;
+  column-gap: var(--gap);
+  padding: 0.8rem 1rem;
+  text-decoration: none;
+  color: white;
+}
+
+.cal-dropdown a:hover {
+  background: rgb(42, 42, 42);
+  color: whitesmoke;
+}
+
+.cal-btn {
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0.6rem;
+  cursor: pointer;
+  border: none;
+  position: relative;
+  width: 50px;
+  height: 50px;
+}
+
+.cal-btn:hover {
+  background-color: whitesmoke;
+}
+
+.cal-show {
+  animation: fadeInAnimation ease 0.25s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  transform: translateY(0rem);
+  visibility: visible;
+  opacity: 1;
+}
+
+.cal-icon {
+  width: 20px;
+  height: 20px;
+  margin: auto;
+}
+
+.cal-link > img {
+  margin-right: 10px;
+}
+
+.edit-event {
+  background-color: rgb(149, 102, 69, 1);
+  border: none;
+  bottom: 0px;
+  color: white;
+  cursor: pointer;
+  font-family: inherit;
+  left: 0;
+  padding: 16px 0;
+  position: fixed;
+  text-align: center;
+  text-decoration: none;
+  width: 100%;
+}
+
+.white-svg {
+  filter: invert(99%) sepia(1%) saturate(0%) hue-rotate(305deg) brightness(108%) contrast(101%);
+}
+
+@media (min-width: 1025px) {
+  
+}
+
+@keyframes textFade {
+  0% {
+    transform: translateX(-1em);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

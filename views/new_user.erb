@@ -1,26 +1,19 @@
-<form action="/users/new-user" method="post">
-  <dl>
-    <dt>
-      <label for="name">Enter your full name:</label>
-    </dt>
-    <dd>
-      <input name="name" placeholder="John Doe" type="text" value="">
-    </dd>
-    <dt>
-      <label for="username">Enter your username:</label>
-    </dt>
-    <dd>
-      <input name="username" placeholder="jdoe321" type="text" value="">
-    </dd>
-    <dt>
-      <label for="password">Enter your password:</label>
-    </dt>
-    <dd>
-      <input name="password" type="password" value="">
-    </dd>
-  </dl>
-  <fieldset class="actions">
-    <input type="submit" value="Save">
-    <a href="/">Cancel</a>
-  </fieldset>
+<form class="login" action="/create-account" method="post">
+  <label class="login-inp" for="name">
+    <input name="name" type="text" value="<%= params[:name] || '' %>" placeholder="" required autofocus/>
+    <span class="login-label">Full Name</span>
+    <span class="focus-bg"></span>
+  </label>
+  <label class="login-inp" for="title">
+    <input name="username" type="text" value="<%= params[:username] || '' %>" placeholder="" required/>
+    <span class="login-label">Username</span>
+    <span class="focus-bg"></span>
+  </label>
+  <label class="login-inp" for="title">
+    <input name="password" type="password" value="" placeholder="" required/>
+    <span class="login-label">Password</span>
+    <span class="focus-bg"></span>
+  </label>
+=  <input type="submit" value="Save">
+  <a href="/">Cancel</a>
 </form>

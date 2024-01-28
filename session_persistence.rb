@@ -27,6 +27,6 @@ class SessionPersistence
 
   def valid_token?
     duration = (Time.now().to_i - @login_time)
-    duration < 600 # 10 mins
+    duration < 6000 # 100 mins
   end
 end

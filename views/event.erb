@@ -1,1 +1,79 @@
-<h1><%= @event[:title] %></h1>
+<div class="event" >
+  <span>
+    <span class="event-title" >
+      <h1><%= @event[:title] %></h1>
+    </span>
+    <span class="event-image-container" >
+      <img class="event-image" draggable="false" src=<%= @event[:event_picture] %> >
+    </span>
+    <span class="event-datetime">
+      <p class="event-date"><%= format_date(@event[:date]) %></p>
+      <p class="event-time">
+        <%= format_time(@event[:date], @event[:time_start]) %> - 
+        <%= format_time(@event[:date], @event[:time_end]) %>
+      </p>
+    </span>
+    <span class="cal-section" id="cal-section">
+      <button class="cal-btn" id="cal-btn" onclick="">
+        <img class="cal-icon" src="/images/calendar.svg"/>
+      </button>
+      <div class="cal-dropdown" id="cal-dropdown">
+        <a  href="<%= @cal.ical_url %>" class="cal-link" >
+          <img class="white-svg" src="/images/apple.svg" draggable="false">
+          Apple
+        </a>
+        <a href="<%= @cal.google_url %>" class="cal-link" >
+          <img class="white-svg" src="/images/google.svg" draggable="false">
+          Google
+        </a>
+      </div>
+    </span>
+    <span class="event-info-container">
+      <img class="organizer-icon" src="/images/feather.svg">
+      <p>Organized by <a><%= @event[:creator] %></a></p>
+    </span>
+    <span class="event-info-container">
+      <img class="location-icon" src="/images/geo-alt.svg">
+      <p><%= @event[:location] %></p>
+    </span>
+    <span class="spacer-20"></span>
+    <% format_description(@event[:description]).each do |str|%>
+      <p>
+          <%= str %>
+          <br/><br/>
+      </p>
+    <% end %>
+    <form class="attending-status" action="/e/<%= @event[:id] %>" method="post" onclick="reloadParticipants()" id="attending-status">
+      <fieldset>
+        <label>
+          <input onchange="submitStatus(this)" type="radio" name="attending" value="Y" 
+          <%= @current_status == "Y" ? "checked" : nil %>/>
+          Going
+        </label>
+        <label>
+          <input onchange="submitStatus(this)" type="radio" name="attending" value="M"
+          <%= @current_status == "M" ? "checked" : nil %>/>
+          Maybe
+        </label>
+        <label>
+          <input onchange="submitStatus(this)" type="radio" name="attending" value="N"
+          <%= @current_status == "N" ? "checked" : nil %>/>
+          Not Going
+        </label>
+      </fieldset>
+    </form>
+
+    <h3>Participants</h3>
+    
+    <%== partial(:_participants_partial, :participants => @participants, :current_status => @current_status) %>
+
+  </span>
+  <% if event_owner?(@event[:id]) %>
+    <a class="edit-event" href=<%= "/e/#{@event[:id]}/edit" %>>Edit</a>
+  <% end %>
+</div>
+<span class="bottom-spacing" ></span>
+
+<script src="/javascripts/calDropdown.js"></script>
+<script src="/javascripts/submitStatus.js"></script>
+<script src="/javascripts/reloadParticipants.js"></script>

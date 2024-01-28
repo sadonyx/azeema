@@ -1,0 +1,32 @@
+.profile {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.profile > img {
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: 0 auto;
+  margin-top: 10px;
+  width: 100px;
+}
+
+.profile > input[type=file] {
+  visibility: hidden;
+}
+
+.stats-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin: 20px auto;
+  text-align: center;
+}
+ 
+#username {
+  font-size: 2rem;
+  margin: 0 auto;
+}
+
