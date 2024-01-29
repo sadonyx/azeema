@@ -25,7 +25,7 @@ ADD CONSTRAINT users_name_only_alphabets
   date date NOT NULL,
   time_start time NOT NULL,
   time_end time NOT NULL,
-  capacity numeric NOT NULL DEFAULT 'infinity'::numeric,
+  capacity numeric NOT NULL DEFAULT 500,
   creator_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   date_created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   event_picture text default NULL
