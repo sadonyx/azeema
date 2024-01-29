@@ -17,7 +17,7 @@ configure do
   set :session_secret, SecureRandom.hex(32)
   set :erb, :escape_html => true
   set :public_folder, __dir__ + '/public'
-  set :port, 8080
+  set :port, 80
   if Sinatra::Base.production?
     set :show_exceptions, false
   end 
