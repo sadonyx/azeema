@@ -13,10 +13,14 @@ require_relative "aws_persistence.rb"
 
 configure do
   enable :sessions
+  set :environment, :production
   set :session_secret, SecureRandom.hex(32)
   set :erb, :escape_html => true
   set :public_folder, __dir__ + '/public'
   set :port, 8080
+  if Sinatra::Base.production?
+    :show_exceptions, false
+  end 
 end
 
 configure(:development) do

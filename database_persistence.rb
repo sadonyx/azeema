@@ -6,9 +6,9 @@ require 'dotenv/load'
 class DatabasePersistence
   def initialize(logger)
     @db = if Sinatra::Base.production?
-        PG.connect(dbname: ENV['DB_NAME'])
+        PG.connect(dbname: 'azeema')
       else
-        PG.connect(dbname: ENV['DB_NAME'])
+        PG.connect(dbname: 'azeema')
       end
     @logger = logger
   end
