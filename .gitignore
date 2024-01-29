@@ -1,2 +1,2 @@
 .env
-pg_cred.txt
+schema.sql

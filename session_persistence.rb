@@ -3,6 +3,7 @@ class SessionPersistence
     @username = user
     @creator_id = nil
     @login_time = 0
+    @color = set_pfp_color
   end
 
   def sign_in(user, id)
@@ -28,5 +29,16 @@ class SessionPersistence
   def valid_token?
     duration = (Time.now().to_i - @login_time)
     duration < 6000 # 100 mins
+  end
+
+    # Randomize user color (aesthetic purposes only)
+  def set_pfp_color
+    chars = '0123456789ABCDEF'.split('')
+    color = "#"
+
+    6.times do
+      color += chars.sample
+    end
+    color
   end
 end

@@ -1,15 +1,14 @@
 require "pg"
 require "time"
 require "date"
+require 'dotenv/load'
 
 class DatabasePersistence
   def initialize(logger)
     @db = if Sinatra::Base.production?
-        # PG.connect(ENV['DATABASE_URL'])
-        PG.connect(dbname: 'azeema')
+        PG.connect(dbname: ENV['DB_NAME'])
       else
-        # PG.connect(ENV['DATABASE_URL'])
-        PG.connect(dbname: 'azeema')
+        PG.connect(dbname: ENV['DB_NAME'])
       end
     @logger = logger
   end

@@ -43,21 +43,25 @@ end
 
 not_found do
   if is_logged_in?
+    session[:error] = "That page does not exist."
     redirect "/events"
   else
     status 404
+    session[:error] = "That page does not exist. Please sign in to see your events."
     erb :oops
   end
 end
 
 get "/" do
-  redirect_to_login
+  redirect_to_login unless is_logged_in?
   # Eventually will lead to landing page...
   redirect "/events"
 end
 
+# Load home page (when signed-in)
 get "/events" do
-  redirect_to_login("You must be logged in to view your events.")
+  set_redirect_url("/events")
+  redirect_to_login("You must be logged in to view your events.") unless is_logged_in?
 
   @events = @storage.all_events(@user_session.id)
   @status = "all"
@@ -65,8 +69,10 @@ get "/events" do
   erb :events, layout: :layout
 end
 
+# Load user profile page
 get "/profile" do
-  redirect_to_login("You must be logged in to view your profile.")
+  set_redirect_url("/profile")
+  redirect_to_login("You must be logged in to view your profile.") unless is_logged_in? 
 
   @user_stats = @storage.get_user_stats(@user_session.id)
   erb :profile
@@ -75,7 +81,6 @@ end
 post "/profile" do
   username = @user_session.username
   image = handle_image_file(params, username)
-  p image
 
   @storage.set_pfp_filename(@user_session.id, image[:image_name])
   @s3.put_profile_picture(image[:path], image[:image_name])
@@ -104,25 +109,25 @@ end
 
 # Load Login Page
 get "/login" do
-  if is_logged_in?
-    redirect "/events"
-  else
-    erb :login
-  end
+  redirect "/events" if is_logged_in?
+
+  erb :login
 end
 
 # Send login information for auth
 post "/login" do
-  username = params[:username]
+  username = params[:username].downcase
 
   auth = @storage.sign_in(username, params[:password])
 
-  if auth
+  if auth.is_a?(Hash)
     @user_session.sign_in(auth[:username], auth[:id])
+    redirect session[:redirect] if session[:redirect]
     redirect "/"
+  elsif auth == "That username does not exist."
+    redirect_to_login("The username '#{username}' does not exist.")
   else
-    session[:error] = "Invalid username or password."
-    redirect "/login"
+    erb :login
   end
 end
 
@@ -131,14 +136,17 @@ post "/logout" do
   redirect "/"
 end
 
+# Load event creation page
 get "/events/create" do
-  redirect_to_login("You must be logged in to create an event.")
+  set_redirect_url("/events/create")
+  redirect_to_login("You must be logged in to create an event.") unless is_logged_in?
 
   erb :new_event
 end
 
 post "/events/create" do
-  redirect_to_login("You must be logged in to create an event.")
+  set_redirect_url("/events/create")
+  redirect_to_login("You must be logged in to create an event.") unless is_logged_in?
   event_validation(params)
 
   username = @user_session.username
@@ -156,8 +164,11 @@ post "/events/create" do
   redirect "/e/#{event_id}"
 end
 
+# Load event detail page
 get "/e/:event_id" do
   event_id = params[:event_id]
+  set_redirect_url("/e/#{event_id}")
+  redirect_to_login("You must be logged in to view any event page.") unless is_logged_in?
   event_exists?(event_id)
 
   @current_status = @storage.get_attending_status(event_id, @user_session.id)
@@ -185,17 +196,20 @@ get "/e/:event_id" do
 end
 
 post "/e/:event_id" do
-  redirect_to_login("You must be logged in to set your attending status.")
-
   event_id = params[:event_id]
+  set_redirect_url("/e/#{event_id}")
+  redirect_to_login("You must be logged in to set your attending status.") unless is_logged_in?
+
   participant_id = @user_session.id
   @storage.set_attending_status(event_id, participant_id, params[:attending])
 end
 
+# Load event editting page
 get "/e/:event_id/edit" do
-  redirect_to_login("You must be logged in to edit events you own.")
-
   event_id = params[:event_id]
+  set_redirect_url("/e/#{event_id}/edit")
+  redirect_to_login("You must be logged in to edit events you own.") unless is_logged_in?
+
   event_exists?(event_id)
   authorized_to_edit?(event_id)
   @event = @storage.single_event(event_id)
@@ -203,10 +217,11 @@ get "/e/:event_id/edit" do
 end
 
 post "/e/:event_id/edit" do
-  redirect_to_login("You must be logged in to edit events you own.")
+  event_id = params[:event_id]
+  set_redirect_url("/e/#{event_id}/edit")
+  redirect_to_login("You must be logged in to edit events you own.") unless is_logged_in?
   event_validation(params)
 
-  event_id = params[:event_id]
   username = @user_session.username
   image = handle_image_file(params, username, event_id)
 
@@ -235,7 +250,7 @@ post "/e/:event_id/delete" do
   redirect "/events"
 end
 
-#AJAX Calls
+# AJAX Calls (erb partials)
 
 get "/events/all/:limit" do
   @events = @storage.all_events(@user_session.id, params[:limit])
@@ -269,8 +284,6 @@ get "/e/:event_id/reload-participants" do
   event_id = params[:event_id]
   participants = @storage.all_participants(event_id)
   current_status = @storage.get_attending_status(event_id, @user_session.id)
-
-  puts "current status" + "#{current_status.nil?}"
   
   erb :_participants_partial, :layout => false, :locals => { :participants => participants, :current_status => current_status }
 end
@@ -297,12 +310,13 @@ def b2lah(user_id)
   
 end
 
+# Check if user is logged in
 def is_logged_in?
   @user_session.valid_token? == true
 end
 
+# Check if event exists and provide error messages
 def event_exists?(event_id)
-  p event_id
   valid_input = (event_id.to_i.to_s == event_id)
   if valid_input && !@storage.event_exists?(event_id)
     session[:error] = "This event with ID '#{event_id}' does not exist."
@@ -313,6 +327,7 @@ def event_exists?(event_id)
   end
 end
 
+# Check if the user owns the event before loading edit page
 def authorized_to_edit?(event_id)
   owner = @storage.get_event_creator(event_id)
   if owner && (owner[:creator_id].to_i == @user_session.id.to_i)
@@ -323,13 +338,15 @@ def authorized_to_edit?(event_id)
   end
 end
 
+# Redirect to login and supply appropriate error message
 def redirect_to_login(error=nil)
-  if error && is_logged_in? == false
     session[:error] = error
     redirect "/login"
-  elsif is_logged_in? == false
-    redirect "/login"
-  end
+end
+
+# Set appropriate redirect url to direct user accordingly after login
+def set_redirect_url(url)
+  session[:redirect] = url
 end
 
 def handle_image_file(params, username, event_id=nil)
@@ -356,6 +373,7 @@ def handle_image_file(params, username, event_id=nil)
   return {image_name: image_name, path: path}
 end
 
+# Event requirements before allowing to save changes
 def event_validation(params)
   title = params[:title].strip
   description = params[:description].strip
@@ -373,6 +391,7 @@ def event_validation(params)
   elements.select! { |el| el.values[0] == '' }.map! { |el| el.keys[0].to_s }
   
   if elements.count == 1
+    elements.map { |el| params[:"#{el}"] = '' } # Reset section where invalid
     session[:error] = "You must fill out the #{elements[0]} section."
     halt erb :new_event
   elsif elements.count == 2
@@ -386,7 +405,9 @@ def event_validation(params)
   end
 end
 
+# similar as above methods but for erb use
 helpers do
+  # Load partial and local variables
   def partial(template, locals = {})
     erb template, :layout => false, :locals => locals
   end
@@ -404,6 +425,7 @@ helpers do
     end
   end
 
+  # Display message if no events to load
   def no_events_status(events_arr, status_for)
     if events_arr.empty?
       case status_for

@@ -1,7 +1,7 @@
 require 'aws-sdk-s3'
-require 'dotenv'
+require 'dotenv/load'
 require 'mini_magick'
-Dotenv.load
+
 
 class AwsSession
   def initialize
@@ -13,14 +13,12 @@ class AwsSession
     )
   end
   
-  # BUCKET = @s3.bucket[ENV['S3_BUCKET']]
-
   def put_profile_picture(path, image_name)
     format_profile_picture(path)
 
     File.open(path, 'r') do |file|
       @s3.put_object(
-        bucket: 'azeema',
+        bucket: ENV['S3_BUCKET'],
         key: image_name,
         body: file
       )
@@ -32,7 +30,7 @@ class AwsSession
 
     File.open(path, 'r') do |file|
       @s3.put_object(
-        bucket: 'azeema',
+        bucket: ENV['S3_BUCKET'],
         key: image_name,
         body: file
       )
