@@ -19,7 +19,7 @@ configure do
   set :public_folder, __dir__ + '/public'
   set :port, 8080
   if Sinatra::Base.production?
-    :show_exceptions, false
+    set :show_exceptions, false
   end 
 end
 
