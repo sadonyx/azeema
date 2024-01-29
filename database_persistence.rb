@@ -5,9 +5,11 @@ require "date"
 class DatabasePersistence
   def initialize(logger)
     @db = if Sinatra::Base.production?
-        PG.connect(ENV['DATABASE_URL'])
+        # PG.connect(ENV['DATABASE_URL'])
+        PG.connect(dbname: 'azeema')
       else
-        PG.connect(ENV['DATABASE_URL'])
+        # PG.connect(ENV['DATABASE_URL'])
+        PG.connect(dbname: 'azeema')
       end
     @logger = logger
   end
