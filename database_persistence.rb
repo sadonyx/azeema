@@ -13,6 +13,7 @@ class DatabasePersistence
     @logger = logger
   end
 
+  # Create new user sign-up (password encrypted using pgcrypto)
   def create_new_user(name, username, password, session)
     sql_create_new_user = <<-SQL
       INSERT INTO users (name, username, pswhash) VALUES
@@ -26,6 +27,7 @@ class DatabasePersistence
     end
   end
 
+  # Creates a new event (all fields required)
   def create_new_event(title, description, location, date, time_start, time_end, creator_id, image_name=nil)
     sql_create_new_event = <<-SQL
       INSERT INTO events (title, description, location, date, time_start, time_end, creator_id) VALUES
@@ -43,6 +45,7 @@ class DatabasePersistence
     return event_id
   end
 
+  # Update an event's details
   def edit_event(title, description, location, date, time_start, time_end, event_id, image_name=nil)
     sql_edit_event = <<-SQL
       UPDATE events SET
@@ -64,6 +67,7 @@ class DatabasePersistence
     end
   end
 
+  # Permenantly delete an event
   def delete_event(event_id)
     sql_delete_event = <<-SQL
       DELETE FROM events WHERE id = $1
@@ -71,7 +75,14 @@ class DatabasePersistence
     query(sql_delete_event, event_id)
   end
 
+  # Login Validation
   def sign_in(username, password)
+    sql_username = <<-SQL
+      SELECT 1
+      FROM users 
+        WHERE username = $1 
+    SQL
+
     sql_sign_in = <<-SQL
       SELECT 
         id, 
@@ -81,35 +92,17 @@ class DatabasePersistence
           AND pswhash = crypt($2, pswhash)
     SQL
 
-    match = query(sql_sign_in, username, password).first
+    exists = (query(sql_username, username).first ? true : false)
 
-    match ? { username: match["username"], id: match["id"].to_i } : nil
-    # match.first ? match.first["username"] : nil
-  end
-
-  def hosting_events(creator_id)
-    sql_hosting_query = <<-SQL
-      SELECT 
-        title, 
-        date, 
-        id 
-      FROM events 
-        WHERE creator_id IN (
-          SELECT 
-            users.id 
-          FROM users 
-            WHERE users.id = $1
-        );
-    SQL
-    events = query(sql_hosting_query, creator_id)
-
-    events.map do |event|
-      { title: event["title"],
-        date: event["date"],
-        id: event["id"] }
+    if exists
+      match = query(sql_sign_in, username, password).first
+      return match ? { username: match["username"], id: match["id"].to_i } : "Incorrect Password."
+    else
+      return "That username does not exist."
     end
   end
 
+  # Gets the attending status of a user with the given `participant_id`
   def get_attending_status(event_id, participant_id)
     sql_check_status_query = <<-SQL
       SELECT 
@@ -123,6 +116,7 @@ class DatabasePersistence
     status.first ? status.first["attendee_status"] : nil
   end
 
+  # Sets either a new attending status of the current user OR updates the attending status
   def set_attending_status(event_id, participant_id, new_status)
      current_status = get_attending_status(event_id, participant_id)
 
@@ -144,6 +138,7 @@ class DatabasePersistence
     end
   end
 
+  # Returns all participants and their attending statuses of the specified event.
   def all_participants(event_id)
     sql_all_participants_query = <<-SQL
       SELECT 
@@ -161,6 +156,7 @@ class DatabasePersistence
     end
   end
 
+  # Returns all the details of a specified event
   def single_event(event_id)
     sql_single_event_query = <<-SQL
       SELECT * FROM events WHERE id = $1
@@ -212,6 +208,7 @@ class DatabasePersistence
     end
   end
 
+  # Get all events a user is HOSTING
   def hosting_events(user_id, limit=4)
     sql_hosting_events_query = <<-SQL
       SELECT DISTINCT 
@@ -240,6 +237,7 @@ class DatabasePersistence
     end
   end
 
+  # Get all events a user has attended (in the past)
   def attended_events(user_id, limit=4)
     sql_attending_events_query = <<-SQL
       SELECT DISTINCT 
@@ -271,6 +269,7 @@ class DatabasePersistence
     end
   end
 
+  # Get all events a user is partaking in the future/present
   def upcoming_events(user_id, limit=4)
     sql_upcoming_events_query = <<-SQL
       SELECT DISTINCT 
@@ -302,6 +301,7 @@ class DatabasePersistence
     end
   end
 
+  # Get the username of the creator of the specified event -> used in hand with the single_event function
   def get_event_creator(event_id)
     sql_event_creator_query = <<-SQL
       SELECT creator_id, 
@@ -316,9 +316,21 @@ class DatabasePersistence
     creator ? {creator_id: creator["creator_id"], username: creator["username"]} : nil
   end
 
-  def set_event_picture_filename(event_it, filename)
+  # Check if a specified event exists
+  def event_exists?(event_id)
+    sql_event_exists_query = <<-SQL
+      SELECT 1 
+      FROM events 
+        WHERE id = $1;
+    SQL
+    exists = query(sql_event_exists_query, event_id).first
 
+    exists ? true : false
   end
+
+  # def set_event_picture_filename(event_it, filename)
+
+  # end
 
   def set_pfp_filename(user_id, filename)
     sql_get_pfp_query = <<-SQL
@@ -346,17 +358,6 @@ class DatabasePersistence
     pfp ? "https://azeema.s3.us-west-1.amazonaws.com/#{pfp}" : "/images/default-pfp.svg"
   end
 
-  def event_exists?(event_id)
-    sql_event_exists_query = <<-SQL
-      SELECT 1 
-      FROM events 
-        WHERE id = $1;
-    SQL
-    exists = query(sql_event_exists_query, event_id).first
-
-    exists ? true : false
-  end
-
   def get_event_picture_filename(event_id)
     sql_get_ep_filename = <<-SQL
       SELECT event_picture 
@@ -368,6 +369,7 @@ class DatabasePersistence
     filename ? filename["event_picture"] : nil
   end
 
+  # Get the statistics of the signed in user
   def get_user_stats(user_id)
     sql_num_hosted_query = <<-SQL
       SELECT COUNT(events.creator_id) AS "hosted"
@@ -397,6 +399,7 @@ class DatabasePersistence
 
   private
 
+  # Sign-up error messages
   def error_message(message, username)
     username_length_errors = ["users_username_check", "varying(25)"]
     username_char_errors = ["users_username_no_special_chars"]
@@ -424,6 +427,7 @@ class DatabasePersistence
     @db.exec_params(statement, params)
   end
 
+  # Get a user's username from their given ID
   def get_username_from_id(user_id)
     sql_username_query = <<-SQL
       SELECT username FROM users WHERE id = $1
