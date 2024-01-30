@@ -5,11 +5,10 @@ require 'mini_magick'
 
 class AwsSession
   def initialize
+    creds = Aws::Credentials.new(ENV['S3_ACCESS_ID'], ENV['S3_SECRET_KEY'])
     @s3 = Aws::S3::Client.new(
       region: 'us-west-1',
-      credentials: Aws::Credentials.new(
-        ENV['S3_ACCESS_ID'], ENV['S3_SECRET_KEY']
-      )
+      credentials: creds
     )
   end
   
@@ -18,7 +17,7 @@ class AwsSession
 
     File.open(path, 'r') do |file|
       @s3.put_object(
-        bucket: ENV['S3_BUCKET'],
+        bucket: 'azeema',
         key: image_name,
         body: file
       )
@@ -30,7 +29,7 @@ class AwsSession
 
     File.open(path, 'r') do |file|
       @s3.put_object(
-        bucket: ENV['S3_BUCKET'],
+        bucket: 'azeema',
         key: image_name,
         body: file
       )
